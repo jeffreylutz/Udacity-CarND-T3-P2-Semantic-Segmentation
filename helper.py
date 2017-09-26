@@ -1,5 +1,6 @@
 import re
 import random
+import cv2
 import numpy as np
 import os.path
 import scipy.misc
@@ -111,7 +112,6 @@ def gen_test_output(sess, logits, keep_prob, image_pl, data_folder, image_shape)
     """
     for image_file in glob(os.path.join(data_folder, 'image_2', '*.png')):
         image = scipy.misc.imresize(scipy.misc.imread(image_file), image_shape)
-
         im_softmax = sess.run(
             [tf.nn.softmax(logits)],
             {keep_prob: 1.0, image_pl: [image]})
@@ -132,9 +132,18 @@ def save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, keep_p
         shutil.rmtree(output_dir)
     os.makedirs(output_dir)
 
+    # Create movie writer
+    movieFilename = os.path.join(output_dir,'test.mp4')
+    fourcc = cv2.cv.CV_FOURCC(*"MPG4")
+    w = cv2.VideoWriter(movieFilename, -1, 1.0,image_shape,is_color=1)
+
     # Run NN on test images and save them to HD
     print('Training Finished. Saving test images to: {}'.format(output_dir))
     image_outputs = gen_test_output(
-        sess, logits, keep_prob, input_image, os.path.join(data_dir, 'data_road/testing'), image_shape)
+        sess, logits, keep_prob,
+        input_image,
+        os.path.join(data_dir, 'data_road/testing'),
+        image_shape)
+
     for name, image in image_outputs:
         scipy.misc.imsave(os.path.join(output_dir, name), image)
