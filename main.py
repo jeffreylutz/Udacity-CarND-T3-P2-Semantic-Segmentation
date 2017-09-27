@@ -1,4 +1,5 @@
 import cv2
+import vid
 import os.path
 import tensorflow as tf
 import helper
@@ -126,13 +127,17 @@ def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_l
     :param learning_rate: TF Placeholder for learning rate
     """
     # TODO: Implement function
+    # Was 0.75
+    keep_prob_val = 1.0
+    # was 0.0001
+    learning_rate_val = 1e-5
     for epoch in range(epochs):
         for image, label in get_batches_fn(batch_size):
             _, loss = sess.run([train_op, cross_entropy_loss],
                                feed_dict={input_image: image,
                                           correct_label: label,
-                                          keep_prob: 0.75,
-                                          learning_rate: 0.0001})
+                                          keep_prob: keep_prob_val,
+                                          learning_rate: learning_rate_val})
 
         print("Epoch {}/{}...".format(epoch, epochs), "Training loss: {:.4f}...".format(loss))
 
@@ -147,7 +152,7 @@ def run():
     runs_dir = './runs'
     tests.test_for_kitti_dataset(data_dir)
     batch_size = 16
-    epochs = 15
+    epochs = 55
 
     # Download pretrained vgg model
     helper.maybe_download_pretrained_vgg(data_dir)
@@ -186,11 +191,13 @@ def run():
         saver.save(sess, 'checkpoints/semantic-segmentation-model')
         saver.export_meta_graph('checkpoints/semantic-segmentation-model.meta')
         tf.train.write_graph(sess.graph_def, './checkpoints/', 'semantic-segmentation-model.pb', False)
-        helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, keep_prob, image_input)
+        image_filenames = helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, keep_prob,
+                                                        image_input)
 
         writer.close()
 
         # OPTIONAL: Apply the trained model to a video
+        vid.make_video(image_filenames, 'testing.avi', "MJPG", 1, None, True)
 
 
 # def createMovieFromImages(images):
@@ -198,19 +205,4 @@ def run():
 
 
 if __name__ == '__main__':
-    image_shape = (160, 576)
-    fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    movieFilename = 'test.avi'
-    out = cv2.VideoWriter(movieFilename, fourcc, 1.0, image_shape)
-
-    image = scipy.misc.imresize(scipy.misc.imread('1_before.png'), image_shape)
-    print("image shape:",image.shape)
-    out.write(image)
-    out.write(image)
-    out.write(image)
-    out.write(image)
-    out.write(image)
-    out.release()
-    cv2.destroyAllWindows()
-    print("Wrote test.mp4")
-    # run()
+    run()

@@ -127,15 +127,11 @@ def gen_test_output(sess, logits, keep_prob, image_pl, data_folder, image_shape)
 
 def save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, keep_prob, input_image):
     # Make folder for current run
-    output_dir = os.path.join(runs_dir, str(time.time()))
+    output_dir_str = "" + str(runs_dir) + str(time.time())
+    output_dir = os.path.join(output_dir_str)
     if os.path.exists(output_dir):
         shutil.rmtree(output_dir)
     os.makedirs(output_dir)
-
-    # Create movie writer
-    movieFilename = os.path.join(output_dir,'test.mp4')
-    fourcc = cv2.cv.CV_FOURCC(*"MPG4")
-    w = cv2.VideoWriter(movieFilename, -1, 1.0,image_shape,is_color=1)
 
     # Run NN on test images and save them to HD
     print('Training Finished. Saving test images to: {}'.format(output_dir))
@@ -144,6 +140,8 @@ def save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, keep_p
         input_image,
         os.path.join(data_dir, 'data_road/testing'),
         image_shape)
-
+    image_filenames = []
     for name, image in image_outputs:
         scipy.misc.imsave(os.path.join(output_dir, name), image)
+        image_filenames.append(str(output_dir_str) + "/" + str(name))
+    return image_filenames

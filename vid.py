@@ -24,7 +24,6 @@ def make_video(images, outvid=None, format="XVID", fps=5, size=None, is_color=Tr
     vidWriter = None
     i = 1
     for image in images:
-        print("Adding image: ",i)
         i = i+1
         if not os.path.exists(image):
             raise FileNotFoundError(image)
@@ -47,9 +46,5 @@ image = cv2.imread(image_filename)
 images = [image_filename,image_filename,image_filename,image_filename,image_filename,image_filename,image_filename,image_filename,image_filename,image_filename]
 # works.  Note the AVI extension and type: MJPG and the frame size being flipped w,h->h,w
 make_video(images, 'myvid.avi', "MJPG", 1, None, True)
-
-# Try another format:  XVID and MP4V doesn't work
-# make_video(images, 'myvid.avi', "XVID", 1, None, True)
-# make_video(images, 'myvid.avi', "MP4V", 1, None, True)
 
 print("Finished writing...")
