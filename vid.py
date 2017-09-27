@@ -38,13 +38,12 @@ def make_video(images, outvid=None, format="XVID", fps=5, size=None, is_color=Tr
     vidWriter.release()
     return vidWriter
 
+if __name__ == '__main__':
+    image = scipy.misc.imread('1_before.png')
+    image_filename = '1_before.png'
+    image = cv2.imread(image_filename)
+    images = [image_filename,image_filename,image_filename,image_filename,image_filename,image_filename,image_filename,image_filename,image_filename,image_filename]
+    # works.  Note the AVI extension and type: MJPG and the frame size being flipped w,h->h,w
+    make_video(images, 'myvid.avi', "MJPG", 1, None, True)
 
-#image = scipy.misc.imresize(scipy.misc.imread('1_before.png'), image_shape)
-image = scipy.misc.imread('1_before.png')
-image_filename = '1_before.png'
-image = cv2.imread(image_filename)
-images = [image_filename,image_filename,image_filename,image_filename,image_filename,image_filename,image_filename,image_filename,image_filename,image_filename]
-# works.  Note the AVI extension and type: MJPG and the frame size being flipped w,h->h,w
-make_video(images, 'myvid.avi', "MJPG", 1, None, True)
-
-print("Finished writing...")
+    print("Finished writing...")

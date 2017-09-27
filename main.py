@@ -128,9 +128,9 @@ def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_l
     """
     # TODO: Implement function
     # Was 0.75
-    keep_prob_val = 1.0
+    keep_prob_val = 0.5
     # was 0.0001
-    learning_rate_val = 1e-5
+    learning_rate_val = 1e-4
     for epoch in range(epochs):
         for image, label in get_batches_fn(batch_size):
             _, loss = sess.run([train_op, cross_entropy_loss],
@@ -152,7 +152,7 @@ def run():
     runs_dir = './runs'
     tests.test_for_kitti_dataset(data_dir)
     batch_size = 16
-    epochs = 55
+    epochs = 15
 
     # Download pretrained vgg model
     helper.maybe_download_pretrained_vgg(data_dir)
