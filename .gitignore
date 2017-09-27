@@ -2,6 +2,9 @@
 data/
 checkpoints/
 .idea
+run*
+*.mp4
+*.avi
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
